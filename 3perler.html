@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 Perler</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FFF8F5;
+    --blush: #F2B5C0;
+    --blush-light: #FCE8EC;
+    --lavender: #D4C5EE;
+    --lavender-light: #F0ECFA;
+    --mint: #B2DDD0;
+    --mint-light: #E8F7F3;
+    --peach: #F6CEAD;
+    --peach-light: #FEF0E6;
+    --text: #3D2828;
+    --text-muted: #8A6A6A;
+    --border: #EDD8D4;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  .logo-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--blush);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    background: var(--blush-light);
+  }
+
+  .logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  header p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  section { margin-bottom: 2.5rem; }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+
+  .product-card:hover { transform: translateY(-2px); }
+
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+
+  .product-info {
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .product-price {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--blush);
+    background: white;
+    color: #C4506A;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .add-btn:hover { background: var(--blush-light); }
+  .add-btn.added { background: var(--blush); color: white; border-color: var(--blush); }
+
+  .size-section {
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  .size-section.visible { display: block; }
+
+  .size-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .size-value {
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--blush);
+    cursor: pointer;
+  }
+
+  .remove-btn {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+  }
+
+  .remove-btn:hover { background: #fff0f0; color: #C4506A; border-color: #f0c0c0; }
+
+  .order-summary {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+  }
+
+  .order-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 1rem 0;
+    font-style: italic;
+  }
+
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+
+  .order-item:last-child { border-bottom: none; }
+
+  .order-item-name { color: var(--text); font-weight: 600; }
+  .order-item-detail { color: var(--text-muted); font-size: 0.8rem; }
+  .order-item-price { font-weight: 700; color: #C4506A; }
+
+  .order-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    border-top: 2px solid var(--blush-light);
+  }
+
+  .contact-form {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .form-field input, .form-field textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-field input:focus, .form-field textarea:focus {
+    border-color: var(--blush);
+  }
+
+  .form-field textarea { resize: vertical; min-height: 80px; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #F2B5C0, #D4A5E0);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: opacity 0.15s;
+  }
+
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .payment-box {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    display: none;
+  }
+
+  .payment-box.visible { display: block; }
+
+  .payment-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .pay-tab {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .pay-tab.active {
+    border-color: var(--blush);
+    background: var(--blush-light);
+    color: #C4506A;
+  }
+
+  .pay-panel { display: none; text-align: center; }
+  .pay-panel.active { display: block; }
+
+  .pay-panel p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .vipps-qr {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    background: var(--lavender-light);
+    border: 1px dashed var(--lavender);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .pay-number {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .pay-hint {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .bank-rows {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    text-align: left;
+  }
+
+  .bank-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bank-row:last-child { border-bottom: none; }
+  .bank-row span:first-child { color: var(--text-muted); }
+  .bank-row span:last-child { font-weight: 700; color: var(--text); }
+
+  .confirmation-banner {
+    background: var(--mint-light);
+    border: 1px solid var(--mint);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  .confirmation-banner.visible { display: block; }
+  .confirmation-banner p { font-size: 0.9rem; color: #2A6B59; }
+  .confirmation-banner strong { font-weight: 700; }
+
+  .badge {
+    display: inline-block;
+    background: var(--blush-light);
+    color: #C4506A;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-circle">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <circle cx="8" cy="16" r="5" fill="#F2B5C0"/>
+      <circle cx="16" cy="16" r="5" fill="#D4C5EE"/>
+      <circle cx="24" cy="16" r="5" fill="#B2DDD0"/>
+    </svg>
+  </div>
+  <div class="logo-text">3 Perler</div>
+  <p>Håndlagde armbånd fra Steinkjer</p>
+</header>
+
+<main>
+
+  <div class="confirmation-banner" id="confirmBanner">
+    <p><strong>Bestillingen er sendt!</strong> Vi kontakter deg snart for å bekrefte og avtale levering. Husk å betale på Vipps nedenfor.</p>
+  </div>
+
+  <section>
+    <h2>Våre armbånd <span class="badge" id="cartCount" style="display:none">0 valgt</span></h2>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+
+  <section>
+    <h2>Din bestilling</h2>
+    <div class="order-summary" id="orderSummary">
+      <div class="order-empty" id="orderEmpty">Du har ikke lagt til noen armbånd ennå.</div>
+      <div id="orderItems"></div>
+      <div class="order-total" id="orderTotal" style="display:none">
+        <span>Totalt</span>
+        <span id="totalPrice">0 kr</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Kontaktinformasjon</h2>
+    <div class="contact-form">
+      <div class="form-field">
+        <label>Navn</label>
+        <input type="text" id="navn" placeholder="Ditt fulle navn" />
+      </div>
+      <div class="form-field">
+        <label>Telefonnummer</label>
+        <input type="tel" id="tlf" placeholder="+47 xxx xx xxx" />
+      </div>
+      <div class="form-field">
+        <label>E-post</label>
+        <input type="email" id="epost" placeholder="din@epost.no" />
+      </div>
+      <div class="form-field">
+        <label>Kommentar (valgfri)</label>
+        <textarea id="kommentar" placeholder="Ønsker du noe spesielt?"></textarea>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="sendOrder()">Send bestilling</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Betaling</h2>
+    <div class="payment-box" id="paymentBox">
+      <div class="payment-tabs">
+        <button class="pay-tab active" onclick="switchTab('vipps')">Vipps</button>
+        <button class="pay-tab" onclick="switchTab('bank')">Bankoverforing</button>
+      </div>
+
+      <div class="pay-panel active" id="panel-vipps">
+        <p>Send betaling til dette nummeret etter at vi har bekreftet bestillingen:</p>
+        <div class="vipps-qr">QR-kode kommer her</div>
+        <div class="pay-number">+47 000 00 000</div>
+        <div class="pay-hint">Merk betalingen med navnet ditt og "3 Perler"</div>
+      </div>
+
+      <div class="pay-panel" id="panel-bank">
+        <p>Overfør til kontoen vår etter at vi har bekreftet bestillingen:</p>
+        <div class="bank-rows">
+          <div class="bank-row"><span>Kontonummer</span><span>0000 00 00000</span></div>
+          <div class="bank-row"><span>Mottaker</span><span>Fornavn Etternavn</span></div>
+          <div class="bank-row"><span>Melding</span><span id="bankMsg">Navnet ditt + 3 Perler</span></div>
+          <div class="bank-row"><span>Beløp</span><span id="bankAmount">—</span></div>
+        </div>
+        <div class="pay-hint">Varen sendes når betalingen er mottatt</div>
+      </div>
+    </div>
+
+    <div style="background:white; border:1px solid var(--border); border-radius:16px; padding:1.25rem; text-align:center; color:var(--text-muted); font-size:0.88rem;" id="paymentPlaceholder">
+      Betalingsinformasjon vises etter at du har lagt til armbånd i bestillingen.
+    </div>
+  </section>
+
+</main>
+
+<script>
+const products = [
+  { id: 1, name: 'Rosa perler', price: 50, color: '#F2B5C0', bg: '#FCE8EC', beads: ['#F2B5C0','#FDCDD5','#F2B5C0','#E89BAA','#F2B5C0','#FDCDD5','#F2B5C0','#E89BAA'] },
+  { id: 2, name: 'Blå og hvit', price: 50, color: '#9EC5E8', bg: '#E6F1FB', beads: ['#9EC5E8','#FFFFFF','#9EC5E8','#FFFFFF','#9EC5E8','#FFFFFF','#9EC5E8','#FFFFFF'] },
+  { id: 3, name: 'Mintgrønn', price: 60, color: '#B2DDD0', bg: '#E8F7F3', beads: ['#B2DDD0','#7DBFAF','#B2DDD0','#7DBFAF','#D4EEE8','#7DBFAF','#B2DDD0','#7DBFAF'] },
+  { id: 4, name: 'Lavendel', price: 50, color: '#D4C5EE', bg: '#F0ECFA', beads: ['#D4C5EE','#B9A8E0','#D4C5EE','#B9A8E0','#E4DAFA','#B9A8E0','#D4C5EE','#B9A8E0'] },
+  { id: 5, name: 'Fersken og gull', price: 60, color: '#F6CEAD', bg: '#FEF0E6', beads: ['#F6CEAD','#E8A87C','#F6CEAD','#D4AF70','#F6CEAD','#E8A87C','#F6CEAD','#D4AF70'] },
+  { id: 6, name: 'Hvit og rosa', price: 50, color: '#F9D5D3', bg: '#FEF0EE', beads: ['#FFFFFF','#F9D5D3','#FFFFFF','#F9D5D3','#FFFFFF','#F9D5D3','#FFFFFF','#F9D5D3'] },
+  { id: 7, name: 'Regnbue', price: 60, color: '#F2B5C0', bg: '#FFF8F5', beads: ['#F2B5C0','#F6CEAD','#FFF0A0','#B2DDD0','#9EC5E8','#D4C5EE','#F2B5C0','#F6CEAD'] },
+  { id: 8, name: 'Gul og hvit', price: 50, color: '#F9E4A0', bg: '#FFFBE6', beads: ['#F9E4A0','#FFFFFF','#F9E4A0','#F0CF60','#FFFFFF','#F9E4A0','#FFFFFF','#F0CF60'] },
+];
+
+const cart = {};
+
+function braceletSVG(beads, bg) {
+  const cx = 60, cy = 60, r = 38, beadR = 6.5;
+  const n = beads.length;
+  let circles = '';
+  for (let i = 0; i < n; i++) {
+    const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    circles += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${beadR}" fill="${beads[i]}" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>`;
+  }
+  return `<svg width="120" height="120" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+    ${circles}
+  </svg>`;
+}
+
+function render() {
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = products.map(p => {
+    const inCart = cart[p.id];
+    return `<div class="product-card">
+      <div class="product-img" style="background:${p.bg}">${braceletSVG(p.beads, p.bg)}</div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${p.price} kr</div>
+        <button class="add-btn ${inCart ? 'added' : ''}" onclick="toggleCart(${p.id})">
+          ${inCart ? 'I bestillingen' : 'Legg til'}
+        </button>
+        <div class="size-section ${inCart ? 'visible' : ''}" id="size-${p.id}">
+          <div class="size-label">
+            <span>Håndleddsstørrelse</span>
+            <span class="size-value" id="sizeVal-${p.id}">${inCart ? inCart.size : 16} cm</span>
+          </div>
+          <input type="range" min="12" max="22" step="1" value="${inCart ? inCart.size : 16}"
+            oninput="updateSize(${p.id}, this.value)">
+          <button class="remove-btn" onclick="removeFromCart(${p.id})">Fjern fra bestilling</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderOrder();
+}
+
+function toggleCart(id) {
+  if (cart[id]) {
+    delete cart[id];
+  } else {
+    const p = products.find(x => x.id === id);
+    cart[id] = { ...p, size: 16 };
+  }
+  render();
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  render();
+}
+
+function updateSize(id, val) {
+  if (cart[id]) cart[id].size = parseInt(val);
+  document.getElementById('sizeVal-' + id).textContent = val + ' cm';
+  renderOrder();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function renderOrder() {
+  const items = Object.values(cart);
+  const empty = document.getElementById('orderEmpty');
+  const orderItems = document.getElementById('orderItems');
+  const orderTotal = document.getElementById('orderTotal');
+  const cartCount = document.getElementById('cartCount');
+  const paymentBox = document.getElementById('paymentBox');
+  const paymentPlaceholder = document.getElementById('paymentPlaceholder');
+
+  if (items.length === 0) {
+    empty.style.display = 'block';
+    orderItems.innerHTML = '';
+    orderTotal.style.display = 'none';
+    cartCount.style.display = 'none';
+    paymentBox.classList.remove('visible');
+    paymentPlaceholder.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    cartCount.style.display = 'inline-block';
+    cartCount.textContent = items.length + ' valgt';
+    paymentBox.classList.add('visible');
+    paymentPlaceholder.style.display = 'none';
+
+    const total = items.reduce((s, i) => s + i.price, 0);
+    orderItems.innerHTML = items.map(i =>
+      `<div class="order-item">
+        <div>
+          <div class="order-item-name">${i.name}</div>
+          <div class="order-item-detail">Størrelse: ${i.size} cm</div>
+        </div>
+        <div class="order-item-price">${i.price} kr</div>
+      </div>`
+    ).join('');
+    orderTotal.style.display = 'flex';
+    document.getElementById('totalPrice').textContent = total + ' kr';
+    const bankAmount = document.getElementById('bankAmount');
+    if (bankAmount) bankAmount.textContent = total + ' kr';
+  }
+}
+
+function sendOrder() {
+  const navn = document.getElementById('navn').value.trim();
+  const tlf = document.getElementById('tlf').value.trim();
+  const epost = document.getElementById('epost').value.trim();
+  const items = Object.values(cart);
+
+  if (!navn || !tlf || !epost) {
+    alert('Fyll inn navn, telefonnummer og e-post.');
+    return;
+  }
+  if (items.length === 0) {
+    alert('Du har ikke lagt til noen armbånd ennå.');
+    return;
+  }
+
+  document.getElementById('confirmBanner').classList.add('visible');
+  document.getElementById('confirmBanner').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'Bestilling sendt!';
+}
+
+render();
+</script>
+</body>
+</html>
